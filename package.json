@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "cds-serve --in-memory",
-    "watch": "cds watch"
+    "start": "cds-tsx serve --in-memory",
+    "watch": "cds-tsx watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/service.test.js"
   },
   "engines": {
     "node": ">=22"
@@ -14,7 +16,45 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@cap-js/cds-types": "^0.19.0",
     "@cap-js/sqlite": "^3.1.1",
-    "@sap/cds-dk": "^10.1.2"
+    "@sap/cds-dk": "^10.1.2",
+    "@types/node": "^22.20.4",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  },
+  "cds": {
+    "requires": {
+      "[development]": {
+        "auth": {
+          "kind": "basic",
+          "users": {
+            "pilot-x": {
+              "password": "pilot-x",
+              "roles": [
+                "Spacefarer"
+              ],
+              "attr": {
+                "planet": "X"
+              }
+            },
+            "pilot-y": {
+              "password": "pilot-y",
+              "roles": [
+                "Spacefarer"
+              ],
+              "attr": {
+                "planet": "Y"
+              }
+            },
+            "visitor": {
+              "password": "visitor",
+              "roles": []
+            },
+            "*": false
+          }
+        }
+      }
+    }
   }
 }

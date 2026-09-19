@@ -9,8 +9,8 @@ entity Spacefarers : cuid {
   stardustCollection      : Integer default 0;
   wormholeNavigationSkill : Integer default 0;
   spacesuitColor          : String(30) default 'White';
-  department              : Association to Departments;
-  position                : Association to Positions;
+  department              : Association to Departments @assert.target;
+  position                : Association to Positions @assert.target;
 }
 
 entity Departments {
