@@ -1,0 +1,20 @@
+{
+  "name": "galactic-spacefarer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cds-serve --in-memory",
+    "watch": "cds watch"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@sap/cds": "^10.1.1",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^3.1.1",
+    "@sap/cds-dk": "^10.1.2"
+  }
+}
