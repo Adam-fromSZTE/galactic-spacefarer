@@ -8,7 +8,7 @@ annotate SpacefarerService.Spacefarers with @(
     Description: { Value: originPlanet }
   },
   UI.CreateHidden: true,
-  UI.UpdateHidden: true,
+  UI.UpdateHidden: false,
   UI.DeleteHidden: true,
   UI.SelectionFields: [name, spacesuitColor],
   UI.LineItem: [
@@ -41,8 +41,16 @@ annotate SpacefarerService.Spacefarers with @(
 ) {
   name @title: 'Név';
   email @title: 'E-mail';
-  originPlanet @title: 'Bolygó';
+  originPlanet @title: 'Bolygó' @Common.FieldControl: #ReadOnly;
   stardustCollection @title: 'Csillagpor';
   wormholeNavigationSkill @title: 'Navigációs szint';
   spacesuitColor @title: 'Űrruha színe';
+};
+
+annotate SpacefarerService.Departments with {
+  name @Common.FieldControl: #ReadOnly;
+};
+
+annotate SpacefarerService.Positions with {
+  name @Common.FieldControl: #ReadOnly;
 };

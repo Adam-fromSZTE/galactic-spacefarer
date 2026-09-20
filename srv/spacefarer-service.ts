@@ -82,6 +82,13 @@ export default class SpacefarerService extends cds.ApplicationService {
         : planetFilter
     })
 
+    this.before(['NEW', 'PATCH'], Spacefarers.drafts!, (req: Request<SpacefarerInput>) => {
+      if ('originPlanet' in req.data && req.data.originPlanet !== req.user.attr.planet) {
+        req.reject(400, 'You can only manage spacefarers from your own planet.', 'originPlanet')
+      }
+      if (req.event === 'NEW') req.data.originPlanet = req.user.attr.planet
+    })
+
     this.before(['CREATE', 'UPDATE'], Spacefarers, (req: Request<SpacefarerInput>) => {
       try {
         req.data = prepareSpacefarerData(req.data, req.user.attr.planet, req.event)
