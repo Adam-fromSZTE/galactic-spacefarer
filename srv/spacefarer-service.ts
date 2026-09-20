@@ -1,12 +1,58 @@
 import cds, { type Request, type predicate } from '@sap/cds'
 
-interface SpacefarerInput {
+export interface SpacefarerInput {
   name?: string | null
   email?: string | null
   originPlanet?: string | null
   spacesuitColor?: string | null
   stardustCollection?: number | null
   wormholeNavigationSkill?: number | null
+}
+
+export function prepareSpacefarerData(data: SpacefarerInput, userPlanet: string, event: 'CREATE' | 'UPDATE' | string) {
+  const candidate = { ...data }
+
+  if ('originPlanet' in candidate && candidate.originPlanet !== userPlanet) {
+    throw new Error('You can only manage spacefarers from your own planet.')
+  }
+
+  for (const field of ['name', 'email', 'spacesuitColor'] as const) {
+    if (!(field in candidate)) continue
+    const value = candidate[field]
+    if (typeof value !== 'string' || !value.trim()) {
+      throw new Error(`${field} must not be empty.`)
+    }
+    candidate[field] = value.trim()
+  }
+
+  if ('email' in candidate && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(candidate.email ?? '')) {
+    throw new Error('Please enter a valid email address.')
+  }
+
+  for (const field of ['stardustCollection', 'wormholeNavigationSkill'] as const) {
+    if (field in candidate && (typeof candidate[field] !== 'number' || !Number.isInteger(candidate[field]) || (candidate[field] as number) < 0)) {
+      throw new Error(`${field} must be a non-negative whole number.`)
+    }
+  }
+
+  if (candidate.wormholeNavigationSkill != null && candidate.wormholeNavigationSkill > 100) {
+    throw new Error('Wormhole navigation skill must not exceed 100.')
+  }
+
+  if (event === 'CREATE') {
+    candidate.stardustCollection = Math.max(candidate.stardustCollection ?? 0, 10)
+    candidate.wormholeNavigationSkill = Math.max(candidate.wormholeNavigationSkill ?? 0, 1)
+  }
+
+  return candidate
+}
+
+export function buildCosmicWelcomeEmail(spacefarer: Pick<SpacefarerInput, 'name' | 'email' | 'originPlanet'>) {
+  const to = (spacefarer.email ?? '').trim()
+  const subject = 'Cosmic Launch Confirmation: Your Galactic Journey Begins'
+  const body = `Congratulations, ${spacefarer.name ?? 'Spacefarer'}! Your journey from planet ${spacefarer.originPlanet ?? 'unknown'} is now officially underway. Prepare your stardust and chart your next wormhole. Stay brave, stay curious, and keep reaching for the stars.`
+
+  return { to, subject, body }
 }
 
 export default class SpacefarerService extends cds.ApplicationService {
@@ -34,35 +80,29 @@ export default class SpacefarerService extends cds.ApplicationService {
     })
 
     this.before(['CREATE', 'UPDATE'], Spacefarers, (req: Request<SpacefarerInput>) => {
-      const data = req.data
-      if ('originPlanet' in data && data.originPlanet !== req.user.attr.planet) {
-        req.reject(403, 'You can only manage spacefarers from your own planet.')
+      try {
+        req.data = prepareSpacefarerData(req.data, req.user.attr.planet, req.event)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unexpected validation error.'
+        req.reject(400, message)
       }
+    })
 
-      for (const field of ['name', 'email', 'spacesuitColor'] as const) {
-        if (!(field in data)) continue
-        if (typeof data[field] !== 'string' || !data[field].trim()) {
-          req.reject(400, `${field} must not be empty.`, field)
-        }
-        data[field] = data[field].trim()
+    this.after(['CREATE'], Spacefarers, async (result: any, req: Request<SpacefarerInput>) => {
+      const created = result ?? req.data
+      const base = created ?? {}
+      const emailData = {
+        name: typeof base.name === 'string' ? base.name : 'Spacefarer',
+        email: typeof base.email === 'string' ? base.email : '',
+        originPlanet: typeof base.originPlanet === 'string' ? base.originPlanet : '',
       }
-      if ('email' in data && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email ?? '')) {
-        req.reject(400, 'Please enter a valid email address.', 'email')
-      }
+      const message = buildCosmicWelcomeEmail(emailData)
 
-      for (const field of ['stardustCollection', 'wormholeNavigationSkill'] as const) {
-        if (field in data && (typeof data[field] !== 'number' || !Number.isInteger(data[field]) || data[field] < 0)) {
-          req.reject(400, `${field} must be a non-negative whole number.`, field)
-        }
+      if (message.to) {
+        console.log(`Cosmic notification email: ${message.subject} -> ${message.to}`)
+        console.log(message.body)
       }
-      if (data.wormholeNavigationSkill != null && data.wormholeNavigationSkill > 100) {
-        req.reject(400, 'Wormhole navigation skill must not exceed 100.', 'wormholeNavigationSkill')
-      }
-
-      if (req.event === 'CREATE') {
-        data.stardustCollection = Math.max(data.stardustCollection ?? 0, 10)
-        data.wormholeNavigationSkill = Math.max(data.wormholeNavigationSkill ?? 0, 1)
-      }
+      return result
     })
 
     return super.init()
