@@ -1,22 +1,28 @@
-# Getting Started
+# Galactic Spacefarer Adventure
 
-Welcome to your new CAP project.
+Helyi SAP CAP / TypeScript alkalmazás, SQLite adatbázissal és Fiori List Report / Object Page felülettel.
 
-It contains these folders and files, following our recommended project layout:
+Node.js 22+ szükséges. Indítás:
 
-File or Folder | Purpose
----------|----------
-`app/` | content for UI frontends goes here
-`db/` | your domain models and data go here
-`srv/` | your service models and code go here
-`readme.md` | this getting started guide
+```sh
+npm ci
+npm start
+```
 
-## Next Steps
+Felület: http://localhost:4004/index.html
 
-- Open a new terminal and run `cds watch`
-- (in VS Code simply choose _**Terminal** > Run Task > cds watch_)
-- Start with your domain model, in a CDS file in `db/`
+- `pilot-x` / `pilot-x`: az X bolygó adatai.
+- `pilot-y` / `pilot-y`: az Y bolygó adatai.
+- `visitor` / `visitor`: nincs hozzáférés az adatokhoz.
 
-## Learn More
+A felület kerete belépés nélkül is betölthető; az API és az adatok eléréséhez bejelentkezés és megfelelő szerepkör szükséges.
 
-Learn more at <https://cap.cloud.sap>.
+A listán szűrhetsz és a táblázat beállításaiban rendezhetsz. Új űrutazót a Létrehozás gombbal vehetsz fel, meglévőt a részletező oldal Szerkesztés gombjával módosíthatsz. A változások piszkozatba kerülnek, majd mentéskor véglegesednek.
+
+Az API címe `/odata/v4/spacefarer/`; támogatja a CRUD műveleteket és az OData lapozást. Új végleges rekord közvetlen API-s létrehozásakor add meg az `IsActiveEntity: true` értéket.
+
+A SQLite memóriában fut: újraindításkor a módosítások elvesznek, a CSV mintaadatok töltődnek vissza. A UI5 betöltéséhez internetkapcsolat kell.
+
+Alapból az üdvözlő e-mail csak konzolos előnézet. Valódi küldéshez másold a `.env.example` fájlt `.env` néven, állítsd a `MAIL_MODE` értékét `smtp`-re, töltsd ki a saját SMTP-beállításaidat, majd indítsd újra a szervert.
+
+Fordítási ellenőrzés: `npm run typecheck`. Az automatikus tesztek később készülnek. GitHub-pushhoz még be kell állítani a repository remote címét.

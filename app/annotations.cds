@@ -84,9 +84,11 @@ annotate SpacefarerService.Spacefarers with @(
 };
 
 annotate SpacefarerService.Departments with {
+  ID @Common.Text: name @Common.TextArrangement: #TextOnly;
   name @Common.FieldControl: #ReadOnly;
 };
 
 annotate SpacefarerService.Positions with {
+  ID @Common.Text: name @Common.TextArrangement: #TextOnly;
   name @Common.FieldControl: #ReadOnly;
 };

@@ -54,7 +54,7 @@
               },
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
-                  "tableSettings": { "type": "ResponsiveTable", "selectionMode": "None" }
+                  "tableSettings": { "type": "ResponsiveTable", "selectionMode": "None", "personalization": true }
                 }
               }
             }
