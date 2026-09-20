@@ -1,4 +1,5 @@
 import cds, { type Request, type predicate } from '@sap/cds'
+import { createCosmicMailer } from './cosmic-mail.js'
 
 export interface SpacefarerInput {
   name?: string | null
@@ -58,6 +59,8 @@ export function buildCosmicWelcomeEmail(spacefarer: Pick<SpacefarerInput, 'name'
 export default class SpacefarerService extends cds.ApplicationService {
   async init() {
     const { Spacefarers } = this.entities
+    const sendWelcomeEmail = createCosmicMailer()
+    const log = cds.log('cosmic-mail')
 
     this.before('*', (req: Request) => {
       const planet = req.user.attr.planet
@@ -88,21 +91,23 @@ export default class SpacefarerService extends cds.ApplicationService {
       }
     })
 
-    this.after(['CREATE'], Spacefarers, async (result: any, req: Request<SpacefarerInput>) => {
+    this.after('CREATE', Spacefarers, (result: SpacefarerInput | SpacefarerInput[], req: Request<SpacefarerInput>) => {
       const created = result ?? req.data
-      const base = created ?? {}
-      const emailData = {
-        name: typeof base.name === 'string' ? base.name : 'Spacefarer',
-        email: typeof base.email === 'string' ? base.email : '',
-        originPlanet: typeof base.originPlanet === 'string' ? base.originPlanet : '',
-      }
-      const message = buildCosmicWelcomeEmail(emailData)
+      const messages = (Array.isArray(created) ? created : [created]).map(buildCosmicWelcomeEmail)
 
-      if (message.to) {
-        console.log(`Cosmic notification email: ${message.subject} -> ${message.to}`)
-        console.log(message.body)
-      }
-      return result
+      // AFTER runs before commit. Send only once the complete transaction succeeds.
+      req.on('succeeded', async () => {
+        for (const message of messages) {
+          try {
+            await sendWelcomeEmail(message)
+          } catch (error) {
+            // The candidate is already saved. Do not turn a mail failure into a failed CREATE.
+            const code = error && typeof error === 'object' && 'code' in error
+              ? String(error.code) : 'UNKNOWN'
+            log.error(`Welcome email failed; spacefarer remains saved. Request: ${req.id}; code: ${code}`)
+          }
+        }
+      })
     })
 
     return super.init()

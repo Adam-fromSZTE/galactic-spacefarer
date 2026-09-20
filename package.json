@@ -5,21 +5,22 @@
   "scripts": {
     "start": "cds-tsx serve --in-memory",
     "watch": "cds-tsx watch",
-    "typecheck": "tsc --noEmit",
-    "test": "node --test test/service.test.js"
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
     "@sap/cds": "^10.1.1",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "nodemailer": "^10.0.10"
   },
   "devDependencies": {
     "@cap-js/cds-types": "^0.19.0",
     "@cap-js/sqlite": "^3.1.1",
     "@sap/cds-dk": "^10.1.2",
     "@types/node": "^22.20.4",
+    "@types/nodemailer": "^8.0.2",
     "tsx": "^4.23.13",
     "typescript": "^7.0.2"
   },
