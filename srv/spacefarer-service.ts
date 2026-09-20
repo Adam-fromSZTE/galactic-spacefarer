@@ -41,6 +41,7 @@ export function prepareSpacefarerData(data: SpacefarerInput, userPlanet: string,
   }
 
   if (event === 'CREATE') {
+    candidate.originPlanet = userPlanet
     candidate.stardustCollection = Math.max(candidate.stardustCollection ?? 0, 10)
     candidate.wormholeNavigationSkill = Math.max(candidate.wormholeNavigationSkill ?? 0, 1)
   }
@@ -98,8 +99,9 @@ export default class SpacefarerService extends cds.ApplicationService {
       }
     })
 
-    this.after('CREATE', Spacefarers, (result: SpacefarerInput | SpacefarerInput[], req: Request<SpacefarerInput>) => {
-      const created = result ?? req.data
+    this.after('CREATE', Spacefarers, (_result: unknown, req: Request<SpacefarerInput>) => {
+      // CAP can return an InsertResult instead of the record, including during draft activation.
+      const created = req.data
       const messages = (Array.isArray(created) ? created : [created]).map(buildCosmicWelcomeEmail)
 
       // AFTER runs before commit. Send only once the complete transaction succeeds.

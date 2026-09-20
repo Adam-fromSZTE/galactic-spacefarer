@@ -6,8 +6,8 @@ entity Spacefarers : cuid {
   name                    : String(100) @mandatory;
   email                   : String(254) @mandatory;
   originPlanet            : String(20) @mandatory;
-  stardustCollection      : Integer default 0;
-  wormholeNavigationSkill : Integer default 0;
+  stardustCollection      : Integer default 10;
+  wormholeNavigationSkill : Integer default 1;
   spacesuitColor          : String(30) default 'White';
   department              : Association to Departments @assert.target;
   position                : Association to Positions @assert.target;

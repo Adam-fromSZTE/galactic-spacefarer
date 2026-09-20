@@ -7,7 +7,7 @@ annotate SpacefarerService.Spacefarers with @(
     Title: { Value: name },
     Description: { Value: originPlanet }
   },
-  UI.CreateHidden: true,
+  UI.CreateHidden: false,
   UI.UpdateHidden: false,
   UI.DeleteHidden: true,
   UI.SelectionFields: [name, spacesuitColor],
@@ -27,8 +27,8 @@ annotate SpacefarerService.Spacefarers with @(
       { Value: name },
       { Value: email },
       { Value: originPlanet },
-      { Value: department.name, Label: 'Részleg' },
-      { Value: position.name, Label: 'Beosztás' }
+      { Value: department_ID },
+      { Value: position_ID }
     ]
   },
   UI.FieldGroup#Journey: {
@@ -45,6 +45,42 @@ annotate SpacefarerService.Spacefarers with @(
   stardustCollection @title: 'Csillagpor';
   wormholeNavigationSkill @title: 'Navigációs szint';
   spacesuitColor @title: 'Űrruha színe';
+  department @(
+    title: 'Részleg',
+    Common.Text: department.name,
+    Common.TextArrangement: #TextOnly,
+    Common.ValueListWithFixedValues: true,
+    Common.ValueList: {
+      Label: 'Részleg',
+      CollectionPath: 'Departments',
+      Parameters: [
+        {
+          $Type: 'Common.ValueListParameterInOut',
+          LocalDataProperty: department_ID,
+          ValueListProperty: 'ID'
+        },
+        { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
+      ]
+    }
+  );
+  position @(
+    title: 'Beosztás',
+    Common.Text: position.name,
+    Common.TextArrangement: #TextOnly,
+    Common.ValueListWithFixedValues: true,
+    Common.ValueList: {
+      Label: 'Beosztás',
+      CollectionPath: 'Positions',
+      Parameters: [
+        {
+          $Type: 'Common.ValueListParameterInOut',
+          LocalDataProperty: position_ID,
+          ValueListProperty: 'ID'
+        },
+        { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
+      ]
+    }
+  );
 };
 
 annotate SpacefarerService.Departments with {
