@@ -36,7 +36,8 @@
     },
     "routing": {
       "routes": [
-        { "pattern": ":?query:", "name": "SpacefarerList", "target": "SpacefarerList" }
+        { "pattern": ":?query:", "name": "SpacefarerList", "target": "SpacefarerList" },
+        { "pattern": "Spacefarers({key}):?query:", "name": "SpacefarerDetails", "target": "SpacefarerDetails" }
       ],
       "targets": {
         "SpacefarerList": {
@@ -48,11 +49,25 @@
               "contextPath": "/Spacefarers",
               "initialLoad": "Enabled",
               "variantManagement": "None",
+              "navigation": {
+                "Spacefarers": { "detail": { "route": "SpacefarerDetails" } }
+              },
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": { "type": "ResponsiveTable", "selectionMode": "None" }
                 }
               }
+            }
+          }
+        },
+        "SpacefarerDetails": {
+          "type": "Component",
+          "id": "SpacefarerDetails",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "contextPath": "/Spacefarers",
+              "editableHeaderContent": false
             }
           }
         }

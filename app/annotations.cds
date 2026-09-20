@@ -4,7 +4,8 @@ annotate SpacefarerService.Spacefarers with @(
   UI.HeaderInfo: {
     TypeName: 'Űrutazó',
     TypeNamePlural: 'Űrutazók',
-    Title: { Value: name }
+    Title: { Value: name },
+    Description: { Value: originPlanet }
   },
   UI.CreateHidden: true,
   UI.UpdateHidden: true,
@@ -16,9 +17,30 @@ annotate SpacefarerService.Spacefarers with @(
     { Value: stardustCollection },
     { Value: wormholeNavigationSkill },
     { Value: spacesuitColor }
-  ]
+  ],
+  UI.Facets: [
+    { $Type: 'UI.ReferenceFacet', ID: 'Personal', Label: 'Személyes adatok', Target: '@UI.FieldGroup#Personal' },
+    { $Type: 'UI.ReferenceFacet', ID: 'Journey', Label: 'Űrutazás', Target: '@UI.FieldGroup#Journey' }
+  ],
+  UI.FieldGroup#Personal: {
+    Data: [
+      { Value: name },
+      { Value: email },
+      { Value: originPlanet },
+      { Value: department.name, Label: 'Részleg' },
+      { Value: position.name, Label: 'Beosztás' }
+    ]
+  },
+  UI.FieldGroup#Journey: {
+    Data: [
+      { Value: stardustCollection },
+      { Value: wormholeNavigationSkill },
+      { Value: spacesuitColor }
+    ]
+  }
 ) {
   name @title: 'Név';
+  email @title: 'E-mail';
   originPlanet @title: 'Bolygó';
   stardustCollection @title: 'Csillagpor';
   wormholeNavigationSkill @title: 'Navigációs szint';
