@@ -13,7 +13,6 @@ Felület: http://localhost:4004/index.html
 
 - `pilot-x` / `pilot-x`: az X bolygó adatai.
 - `pilot-y` / `pilot-y`: az Y bolygó adatai.
-- `visitor` / `visitor`: nincs hozzáférés az adatokhoz.
 
 A felület kerete belépés nélkül is betölthető; az API és az adatok eléréséhez bejelentkezés és megfelelő szerepkör szükséges.
 

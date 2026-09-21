@@ -121,6 +121,8 @@ test('invalid candidates are not saved and get no welcome email', async () => {
       ID: id, IsActiveEntity: true, name: 'Invalid Pilot', email: 'invalid@example.test', ...fields
     })
     assert.equal(response.status, 400, JSON.stringify(fields))
+    const body = await response.json()
+    assert.equal(body.error.target, Object.keys(fields)[0])
     assert.equal((await request(recordUrl(id))).status, 404)
   }
   assert.equal(emailPreviews.length, 0)

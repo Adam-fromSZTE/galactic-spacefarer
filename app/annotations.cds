@@ -10,7 +10,7 @@ annotate SpacefarerService.Spacefarers with @(
   UI.CreateHidden: false,
   UI.UpdateHidden: false,
   UI.DeleteHidden: true,
-  UI.SelectionFields: [name, spacesuitColor],
+  UI.SelectionFields: [name, spacesuitColor, stardustCollection],
   UI.LineItem: [
     { Value: name },
     { Value: originPlanet },

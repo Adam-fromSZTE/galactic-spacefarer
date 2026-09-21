@@ -68,13 +68,13 @@ export default class SpacefarerService extends cds.ApplicationService {
         }
         const value = data[field]
         if (typeof value !== 'string' || !value.trim()) {
-          req.reject(400, `${field} must not be empty.`)
+          req.reject(400, `${field} must not be empty.`, field)
         }
         data[field] = value.trim()
       }
 
       if ('email' in data && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email ?? '')) {
-        req.reject(400, 'Please enter a valid email address.')
+        req.reject(400, 'Please enter a valid email address.', 'email')
       }
 
       for (const field of ['stardustCollection', 'wormholeNavigationSkill'] as const) {
@@ -83,12 +83,12 @@ export default class SpacefarerService extends cds.ApplicationService {
         }
         const value = data[field]
         if (typeof value !== 'number' || !Number.isInteger(value) || value < 0) {
-          req.reject(400, `${field} must be a non-negative whole number.`)
+          req.reject(400, `${field} must be a non-negative whole number.`, field)
         }
       }
 
       if (data.wormholeNavigationSkill != null && data.wormholeNavigationSkill > 100) {
-        req.reject(400, 'Wormhole navigation skill must not exceed 100.')
+        req.reject(400, 'Wormhole navigation skill must not exceed 100.', 'wormholeNavigationSkill')
       }
 
       if (req.event === 'CREATE') {
