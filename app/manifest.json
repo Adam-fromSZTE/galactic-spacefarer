@@ -67,7 +67,17 @@
           "options": {
             "settings": {
               "contextPath": "/Spacefarers",
-              "editableHeaderContent": false
+              "editableHeaderContent": false,
+              "content": {
+                "header": {
+                  "actions": {
+                    "BackToList": {
+                      "text": "Vissza a listához",
+                      "press": "galactic.spacefarers.ext.Navigation.backToList"
+                    }
+                  }
+                }
+              }
             }
           }
         }
