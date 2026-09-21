@@ -9,7 +9,19 @@ export interface CosmicEmail {
 
 const log = cds.log('cosmic-mail')
 
-// Create once at service startup; configuration mistakes should be visible early.
+export function buildCosmicWelcomeEmail(spacefarer: {
+  name?: string | null
+  email?: string | null
+  originPlanet?: string | null
+}): CosmicEmail {
+  const to = (spacefarer.email ?? '').trim()
+  const subject = 'Cosmic Launch Confirmation: Your Galactic Journey Begins'
+  const body = `Congratulations, ${spacefarer.name ?? 'Spacefarer'}! Your journey from planet ${spacefarer.originPlanet ?? 'unknown'} is now officially underway. Prepare your stardust and chart your next wormhole. Stay brave, stay curious, and keep reaching for the stars.`
+
+  return { to, subject, body }
+}
+
+// Check mail settings once at startup.
 export function createCosmicMailer() {
   const mode = process.env.MAIL_MODE ?? 'console'
 
